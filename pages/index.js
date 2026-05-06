@@ -82,7 +82,7 @@ const ParallaxHero = () => {
         }}
       >
         <p className="text-gray-600 text-sm md:text-xl leading-snug md:leading-relaxed font-semibold italic relative z-10 transition-colors group-hover:text-black duration-500">
-          "Every journey leaves behind meaningful treasures. This digital vault showcases objects from my travels, each holding a fragment of the destination, the culture, and the moment."
+          &ldquo;Every journey leaves behind meaningful treasures. This digital vault showcases objects from my travels, each holding a fragment of the destination, the culture, and the moment.&rdquo;
         </p>
         <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-gray-50 rounded-full group-hover:scale-110 transition-transform duration-1000"></div>
       </div>
