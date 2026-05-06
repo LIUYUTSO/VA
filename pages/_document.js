@@ -24,10 +24,15 @@ export default function Document() {
         <meta name="twitter:description" content="Explore a curated collection of 3D-modeled travel artifacts and souvenirs from around the world." />
         <meta name="twitter:image" content="/og-image.jpg" />
         
+        {/* Fonts */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
         {/* 网站图标 */}
-        <link 
-          rel="icon" 
-          href="/favicon.ico" 
+        <link
+          rel="icon"
+          href="/favicon.ico"
           type="image/x-icon"
         />
         <link 
