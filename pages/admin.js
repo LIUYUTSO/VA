@@ -42,11 +42,6 @@ export default function Admin() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Localhost bypasses "security" for convenience
-        if (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-          setAuthorized(true);
-        }
-
         const { locationInfo } = await import('../data/collections');
         setCollections(locationInfo);
 
@@ -250,68 +245,24 @@ export default function Admin() {
     try {
       console.log('Step 1: Reading file as Base64...');
       const base64Content = await readFileAsBase64(file);
-      
-      console.log('Step 2: Fetching GitHub Token for Direct Upload...');
-      const tokenRes = await fetch('/api/get-github-token', { method: 'POST' });
-      if (!tokenRes.ok) throw new Error('Failed to retrieve GitHub Token (Is API route working?)');
-      const { token } = await tokenRes.json();
-      if (!token) throw new Error('Server did not return a GitHub Token');
 
-      const REPO_OWNER = 'LIUYUTSO';
-      const REPO_NAME = 'VOYAGE-ARTIFACTS';
-      const encodedPath = `public/models/${file.name}`.split('/').map(segment => encodeURIComponent(segment)).join('/');
+      console.log('Step 2: Uploading via server-side GitHub sync...');
+      const pushRes = await fetch('/api/github-sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: base64Content,
+          path: `public/models/${file.name}`,
+          message: `Upload new 3D model: ${file.name}`,
+          isBinary: true,
+        }),
+      });
 
-      console.log('Step 3: Checking if file already exists (to overwrite)...');
-      let sha;
-      try {
-        const getFileRes = await fetch(
-            `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${encodedPath}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    Accept: 'application/vnd.github.v3+json',
-                },
-            }
-        );
-        if (getFileRes.ok) {
-            const fileData = await getFileRes.json();
-            sha = fileData.sha;
-        }
-      } catch (err) {
-          console.log('File does not exist yet. Will create new entry.');
-      }
-
-      console.log('Step 4: Uploading directly to GitHub API (Bypassing Vercel)!');
-      const pushRes = await fetch(
-          `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${encodedPath}`,
-          {
-              method: 'PUT',
-              headers: {
-                  Authorization: `Bearer ${token}`,
-                  Accept: 'application/vnd.github.v3+json',
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                  message: `Upload new 3D model: ${file.name} directly from client`,
-                  content: base64Content,
-                  sha: sha,
-                  branch: 'main',
-              }),
-          }
-      );
-
-      let data;
-      const contentType = pushRes.headers.get("content-type");
-      if (contentType && contentType.indexOf("application/json") !== -1) {
-        data = await pushRes.json();
-      } else {
-        const textError = await pushRes.text();
-        throw new Error(`GitHub returned non-JSON response (${pushRes.status}): ${textError.substring(0, 100)}...`);
-      }
+      const data = await pushRes.json();
 
       if (pushRes.ok) {
         console.log('Cloud Sync Successful:', data);
-        alert('Model uploaded directly to GitHub front-end (up to 50MB allowed)! Vercel will rebuild soon.');
+        alert('Model uploaded to GitHub! Vercel will rebuild soon.');
         const newModelPath = `/models/${file.name}`;
 
         setAvailableModels(prev => {
