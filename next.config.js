@@ -7,9 +7,6 @@ const nextConfig = {
     });
     return config;
   },
-  serverRuntimeConfig: {
-    PROJECT_ROOT: __dirname,
-  },
   images: {
     unoptimized: true,
   },
