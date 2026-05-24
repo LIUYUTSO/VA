@@ -8,14 +8,14 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const Map = dynamic(() => import('../components/Map'), {
   ssr: false,
-  loading: () => <div style={{ width: '100%', height: '100%', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#333', fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.3em' }}>Initializing Map…</div>
+  loading: () => <div style={{ width: '100%', height: '100%', background: '#e8e4dc', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(40,30,20,0.3)', fontSize: '10px', fontWeight: 400, textTransform: 'uppercase', letterSpacing: '0.14em' }}>Loading…</div>
 });
 
 const ModelPopup = dynamic(() => import('../components/ModelPopup'), { ssr: false });
 
 const ModelPreview = dynamic(() => import('../components/ModelPreview'), {
   ssr: false,
-  loading: () => <div style={{ width: '100%', height: '100%', background: '#fafafa', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ddd', fontSize: '9px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.2em' }}>Warping Asset…</div>
+  loading: () => <div style={{ width: '100%', height: '100%', background: 'rgba(40,30,20,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(40,30,20,0.25)', fontSize: '10px', fontWeight: 400, textTransform: 'uppercase', letterSpacing: '0.14em' }}>Loading…</div>
 });
 
 const MARQUEE_BASE = [
@@ -64,14 +64,12 @@ export default function Home() {
     setIsLoading(false);
   }, []);
 
-  // Scroll: progress bar + hero parallax + horizontal feature
   useEffect(() => {
     const onScroll = () => {
       const h = document.documentElement;
       const pct = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100;
       setScrollPct(pct);
 
-      // Hero parallax (direct DOM)
       const y = window.scrollY;
       if (y < 1200) {
         if (pillRef.current) pillRef.current.style.transform = `translate3d(0,${y * 0.1}px,0)`;
@@ -82,7 +80,6 @@ export default function Home() {
         }
       }
 
-      // Horizontal feature track
       if (featureRef.current && fTrackRef.current && fProgressRef.current) {
         const rect = featureRef.current.getBoundingClientRect();
         const total = featureRef.current.offsetHeight - window.innerHeight;
@@ -98,7 +95,6 @@ export default function Home() {
     return () => { window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', onScroll); };
   }, []);
 
-  // IntersectionObserver: reveal elements
   useEffect(() => {
     if (isLoading) return;
     const io = new IntersectionObserver((entries) => {
@@ -108,7 +104,6 @@ export default function Home() {
     return () => io.disconnect();
   }, [isLoading, locationInfo]);
 
-  // Nav + hero text auto-reveal on load
   useEffect(() => {
     if (isLoading) return;
     const navEl = document.getElementById('va-nav');
@@ -118,7 +113,6 @@ export default function Home() {
     setTimeout(() => { if (quoteRef.current) quoteRef.current.classList.add('va-in'); }, 800);
   }, [isLoading]);
 
-  // Custom cursor
   useEffect(() => {
     const cur = cursorRef.current;
     if (!cur) return;
@@ -135,17 +129,15 @@ export default function Home() {
     return () => { window.removeEventListener('mousemove', onMove); cancelAnimationFrame(raf); };
   }, []);
 
-  // Cursor scale on interactive elements
   useEffect(() => {
     if (isLoading) return;
-    const expand = () => { if (cursorRef.current) { cursorRef.current.style.width = '44px'; cursorRef.current.style.height = '44px'; } };
-    const shrink = () => { if (cursorRef.current) { cursorRef.current.style.width = '14px'; cursorRef.current.style.height = '14px'; } };
+    const expand = () => { if (cursorRef.current) { cursorRef.current.style.width = '40px'; cursorRef.current.style.height = '40px'; } };
+    const shrink = () => { if (cursorRef.current) { cursorRef.current.style.width = '12px'; cursorRef.current.style.height = '12px'; } };
     const els = document.querySelectorAll('a, button, .va-card, .va-ig');
     els.forEach(el => { el.addEventListener('mouseenter', expand); el.addEventListener('mouseleave', shrink); });
     return () => els.forEach(el => { el.removeEventListener('mouseenter', expand); el.removeEventListener('mouseleave', shrink); });
   }, [isLoading, locationInfo]);
 
-  // Magnetic CTA button
   useEffect(() => {
     const btn = magnetRef.current;
     if (!btn) return;
@@ -153,7 +145,7 @@ export default function Home() {
       const r = btn.getBoundingClientRect();
       const x = e.clientX - (r.left + r.width / 2);
       const y = e.clientY - (r.top + r.height / 2);
-      btn.style.transform = `translate(${x * 0.3}px,${y * 0.4}px) scale(1.05)`;
+      btn.style.transform = `translate(${x * 0.3}px,${y * 0.4}px)`;
     };
     const onLeave = () => { btn.style.transform = ''; };
     btn.addEventListener('mousemove', onMove);
@@ -163,10 +155,12 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div style={{ minHeight: '100vh', background: '#fff', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
-        <div style={{ width: '48px', height: '48px', border: '4px solid #000', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }}></div>
-        <p style={{ fontWeight: 900, fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.2em', margin: 0 }}>Synchronizing Voyage…</p>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      <div style={{ minHeight: '100vh', background: '#e8e4dc', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
+        <div style={{ fontSize: '11px', letterSpacing: '0.14em', color: 'rgba(40,30,20,0.35)', textTransform: 'uppercase', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }}>Loading</div>
+        <div style={{ width: '100px', height: '1px', background: 'rgba(40,30,20,0.12)', overflow: 'hidden' }}>
+          <div style={{ height: '100%', background: 'rgba(40,30,20,0.4)', animation: 'va-load 1.4s ease-in-out infinite alternate' }}></div>
+        </div>
+        <style>{`@keyframes va-load { from { width: 15%; } to { width: 85%; } }`}</style>
       </div>
     );
   }
@@ -179,10 +173,7 @@ export default function Home() {
         <meta name="description" content="Explore a curated collection of travel artifacts in immersive 3D. Each object tells a story of a place, a moment, and a journey." />
       </Head>
 
-      {/* Scroll progress bar */}
       <div className="va-progress" style={{ width: `${scrollPct}%` }} />
-
-      {/* Cursor follower */}
       <div className="va-cursor-dot" ref={cursorRef} />
 
       <main className="va-main">
@@ -190,8 +181,8 @@ export default function Home() {
         {/* ── NAV ── */}
         <header id="va-nav" className="va-nav">
           <div>
-            <h1 className="va-nav-title">VOYAGE ARTIFACTS</h1>
-            <small className="va-nav-sub">Curated By Adam Liu</small>
+            <h1 className="va-nav-title">Voyage Artifacts</h1>
+            <small className="va-nav-sub">Curated by Adam Liu</small>
           </div>
           <Link href="/admin" className="va-nav-cta" data-text="Management">
             <span>Management</span>
@@ -244,11 +235,9 @@ export default function Home() {
             <div className="va-pin va-pin-2" />
             <div className="va-pin va-pin-3" />
             <div className="va-pin va-pin-4" />
-            {/* Actual interactive Leaflet map (low opacity behind the overlay) */}
             <div className="va-map-actual">
               <Map locations={locationInfo} onSelectLocation={handleSelectLocation} />
             </div>
-            {/* Decorative text overlay */}
             <div className="va-map-content">
               <div className="va-map-tag"><span className="va-dot" /> Tactical Archive</div>
               <h2 className="va-display">
@@ -279,7 +268,7 @@ export default function Home() {
               <div
                 key={index}
                 className="va-card va-reveal"
-                style={{ transitionDelay: `${index * 0.08}s` }}
+                style={{ transitionDelay: `${index * 0.06}s` }}
                 onClick={() => handleSelectLocation(item)}
                 onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleSelectLocation(item); } }}
                 role="button"
@@ -302,7 +291,7 @@ export default function Home() {
                     ) : (
                       <div className="va-card-placeholder">
                         <div className="va-card-glyph" />
-                        <span className="va-card-glyph-label">3D MODEL</span>
+                        <span className="va-card-glyph-label">3D Model</span>
                       </div>
                     )}
                   </div>
@@ -325,7 +314,7 @@ export default function Home() {
           <div className="va-feature-pin">
             <div className="va-feature-header">
               <h3>Process · From hand<br />to hologram.</h3>
-              <div className="va-feature-meta">04 STEPS · SCROLL →</div>
+              <div className="va-feature-meta">04 Steps · Scroll →</div>
             </div>
             <div className="va-feature-track" ref={fTrackRef}>
               {PROCESS_STEPS.map(step => (
@@ -367,22 +356,22 @@ export default function Home() {
         <footer className="va-footer">
           <div className="va-foot-inner">
             <div>
-              <h2>VOYAGE<br /><span className="va-foot-ghost">ARTIFACTS</span></h2>
+              <h2>Voyage<br /><span className="va-foot-ghost">Artifacts</span></h2>
               <p>Documenting curated artifacts from global expeditions, blending interactive 3D visualization with personal storytelling.</p>
             </div>
             <div className="va-foot-right">
               <div className="va-foot-label">Transmission</div>
               <a href="https://www.instagram.com/adam.liou/" target="_blank" rel="noopener noreferrer" className="va-ig" aria-label="Instagram">
-                <FaInstagram size={22} />
+                <FaInstagram size={20} />
               </a>
               <div className="va-v-badge">System Revision v2.3</div>
             </div>
           </div>
           <div className="va-foot-bottom">
-            <div>© {new Date().getFullYear()} VOYAGE ARTIFACTS</div>
+            <div>© {new Date().getFullYear()} Voyage Artifacts</div>
             <div className="va-foot-links">
               <span>Entry Log</span>
-              <span>Adam Liou</span>
+              <span>Adam Liu</span>
             </div>
           </div>
         </footer>
@@ -401,195 +390,356 @@ export default function Home() {
       <style jsx global>{`
         *, *::before, *::after { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        body { margin: 0; padding: 0; background: #fafafe; cursor: crosshair; font-family: 'Inter', Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; overflow-x: hidden; }
-        ::selection { background: #000; color: #fff; }
+        body {
+          margin: 0; padding: 0;
+          background: #e8e4dc;
+          cursor: default;
+          font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+          -webkit-font-smoothing: antialiased;
+          text-rendering: optimizeLegibility;
+          overflow-x: hidden;
+          color: #1a1410;
+        }
+        ::selection { background: rgba(40,30,20,0.12); color: #1a1410; }
         ::-webkit-scrollbar { width: 0; height: 0; }
         a { color: inherit; text-decoration: none; }
 
         /* ── PROGRESS BAR ── */
-        .va-progress { position: fixed; top: 0; left: 0; height: 3px; background: #000; z-index: 200; pointer-events: none; will-change: width; }
+        .va-progress {
+          position: fixed; top: 0; left: 0;
+          height: 1px;
+          background: rgba(40,30,20,0.35);
+          z-index: 200; pointer-events: none; will-change: width;
+        }
 
         /* ── CURSOR ── */
-        .va-cursor-dot { position: fixed; top: 0; left: 0; width: 14px; height: 14px; border-radius: 50%; background: #000; pointer-events: none; z-index: 300; mix-blend-mode: difference; display: none; transition: width 0.3s, height 0.3s; }
+        .va-cursor-dot {
+          position: fixed; top: 0; left: 0;
+          width: 12px; height: 12px;
+          border-radius: 50%;
+          background: rgba(40,30,20,0.4);
+          pointer-events: none; z-index: 300;
+          display: none;
+          transition: width 0.2s cubic-bezier(0.22,1,0.36,1), height 0.2s cubic-bezier(0.22,1,0.36,1);
+        }
         @media (hover: hover) { .va-cursor-dot { display: block; } }
 
         /* ── MAIN ── */
-        .va-main { position: relative; background: #fafafe; min-height: 100vh; overflow-x: hidden; }
+        .va-main { position: relative; background: #e8e4dc; min-height: 100vh; overflow-x: hidden; }
 
         /* ── NAV ── */
-        .va-nav { position: fixed; top: 0; left: 0; right: 0; height: 64px; background: #000; color: #fff; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; box-shadow: 0 30px 60px -20px rgba(0,0,0,.2); transform: translateY(-110%); transition: transform 0.9s cubic-bezier(.2,.8,.2,1); }
+        .va-nav {
+          position: fixed; top: 0; left: 0; right: 0; height: 64px;
+          background: rgba(255,253,250,0.92);
+          backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+          color: #1a1410;
+          border-bottom: 0.5px solid rgba(40,30,20,0.08);
+          z-index: 100;
+          display: flex; align-items: center; justify-content: space-between;
+          padding: 0 40px;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.04);
+          transform: translateY(-110%);
+          transition: transform 0.8s cubic-bezier(0.22,1,0.36,1);
+        }
         .va-nav.va-nav-in { transform: translateY(0); }
-        .va-nav-title { font-size: 18px; font-weight: 900; font-style: italic; letter-spacing: -0.04em; margin: 0; line-height: 1; }
-        .va-nav-sub { display: block; color: #666; font-size: 8px; letter-spacing: 0.3em; font-weight: 700; margin-top: 4px; text-transform: uppercase; }
-        .va-nav-cta { background: #fff; color: #000; padding: 9px 16px; border-radius: 999px; font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; position: relative; overflow: hidden; display: inline-block; }
-        .va-nav-cta span { position: relative; z-index: 2; display: inline-block; transition: transform 0.55s cubic-bezier(.7,0,.2,1); }
+        .va-nav-title {
+          font-size: 16px; font-weight: 500; font-style: normal;
+          letter-spacing: -0.02em; margin: 0; line-height: 1;
+          color: #1a1410;
+        }
+        .va-nav-sub {
+          display: block;
+          color: rgba(40,30,20,0.35);
+          font-size: 10px; letter-spacing: 0.1em; font-weight: 400;
+          margin-top: 4px; text-transform: uppercase;
+        }
+        .va-nav-cta {
+          background: rgba(40,30,20,0.06);
+          color: rgba(40,30,20,0.6);
+          border: 0.5px solid rgba(40,30,20,0.12);
+          padding: 9px 18px; border-radius: 999px;
+          font-size: 10px; font-weight: 400;
+          letter-spacing: 0.1em; text-transform: uppercase;
+          position: relative; overflow: hidden; display: inline-block;
+          transition: background 0.2s, color 0.2s;
+        }
+        .va-nav-cta span { position: relative; z-index: 2; display: inline-block; transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); }
+        .va-nav-cta:hover { background: rgba(40,30,20,0.1); color: rgba(40,30,20,0.9); }
         .va-nav-cta:hover span { transform: translateY(-140%); }
-        .va-nav-cta::after { content: attr(data-text); position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transform: translateY(140%); transition: transform 0.55s cubic-bezier(.7,0,.2,1); font-size: 9px; font-weight: 900; letter-spacing: 0.18em; }
+        .va-nav-cta::after { content: attr(data-text); position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; transform: translateY(140%); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); font-size: 10px; font-weight: 400; letter-spacing: 0.1em; }
         .va-nav-cta:hover::after { transform: translateY(0); }
 
         /* ── HERO ── */
-        .va-hero-section { max-width: 1400px; margin: 0 auto; padding: 120px 32px 160px; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
-        .va-pill { background: #000; color: #fff; padding: 6px 16px; border-radius: 999px; font-size: 10px; font-weight: 900; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 48px; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 30px 60px -20px rgba(0,0,0,.15); will-change: transform; }
-        .va-dot { width: 6px; height: 6px; border-radius: 50%; background: #7CFFB2; box-shadow: 0 0 12px #7CFFB2; animation: va-pulse 1.6s infinite; display: inline-block; flex-shrink: 0; }
-        @keyframes va-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .va-hero-section {
+          max-width: 1400px; margin: 0 auto;
+          padding: 120px 32px 160px;
+          display: flex; flex-direction: column; align-items: center; text-align: center;
+          position: relative;
+        }
+        .va-pill {
+          background: rgba(255,253,250,0.85);
+          backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+          border: 0.5px solid rgba(40,30,20,0.12);
+          color: rgba(40,30,20,0.5);
+          padding: 7px 18px; border-radius: 999px;
+          font-size: 10px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase;
+          margin-bottom: 48px; display: inline-flex; align-items: center; gap: 8px;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+          will-change: transform;
+        }
+        .va-dot {
+          width: 6px; height: 6px; border-radius: 50%;
+          background: rgba(40,30,20,0.45);
+          animation: va-pulse 2s infinite; display: inline-block; flex-shrink: 0;
+        }
+        @keyframes va-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         /* ── DISPLAY TYPE ── */
-        .va-display { font-size: clamp(56px, 11vw, 160px); font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.06em; line-height: 0.88; margin: 0 0 60px; max-width: 1100px; }
+        .va-display {
+          font-size: clamp(48px, 9vw, 128px);
+          font-weight: 500; font-style: normal;
+          text-transform: none; letter-spacing: -0.02em;
+          line-height: 1.0; margin: 0 0 56px; max-width: 1100px;
+          color: #1a1410;
+        }
         .va-row { display: block; overflow: hidden; }
-        .va-word { display: inline-block; transform: translateY(110%); transition: transform 1.1s cubic-bezier(.2,.8,.2,1); will-change: transform; }
+        .va-word {
+          display: inline-block;
+          transform: translateY(105%);
+          transition: transform 0.7s cubic-bezier(0.22,1,0.36,1);
+          will-change: transform;
+        }
         .va-line.va-in .va-word { transform: translateY(0); }
-        .va-row-muted .va-word { color: #bdbdc4; }
-
-        .va-hero-display { margin-bottom: 60px; }
+        .va-row-muted .va-word { color: rgba(40,30,20,0.28); }
+        .va-hero-display { margin-bottom: 56px; }
 
         /* ── HERO QUOTE ── */
-        .va-hero-quote { max-width: 740px; background: #fff; border: 1px solid #f0f0f3; padding: 44px; border-radius: 48px; box-shadow: 0 60px 120px -40px rgba(0,0,0,.06); position: relative; overflow: hidden; opacity: 0; transform: translateY(40px); transition: transform 1.1s cubic-bezier(.2,.8,.2,1) 0.35s, opacity 1.1s 0.35s; will-change: transform, opacity; }
+        .va-hero-quote {
+          max-width: 680px;
+          background: rgba(255,253,250,0.92);
+          backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
+          border: 0.5px solid rgba(40,30,20,0.08);
+          padding: 40px 44px; border-radius: 16px;
+          box-shadow: 0 8px 40px rgba(0,0,0,0.06);
+          position: relative; overflow: hidden;
+          opacity: 0; transform: translateY(20px);
+          transition: transform 0.7s cubic-bezier(0.22,1,0.36,1) 0.3s, opacity 0.7s 0.3s;
+          will-change: transform, opacity;
+        }
         .va-hero-quote.va-in { opacity: 1; transform: translateY(0); }
-        .va-hero-quote p { margin: 0; font-size: 19px; line-height: 1.55; color: #5b5b66; font-weight: 600; font-style: italic; position: relative; z-index: 2; transition: color 0.6s; }
-        .va-hero-quote:hover p { color: #000; }
-        .va-blob { position: absolute; right: -32px; bottom: -32px; width: 128px; height: 128px; border-radius: 50%; background: #f5f5f8; transition: transform 1s; }
-        .va-hero-quote:hover .va-blob { transform: scale(1.25); }
+        .va-hero-quote p {
+          margin: 0; font-size: 15px; line-height: 1.8;
+          color: rgba(40,30,20,0.6); font-weight: 400; font-style: normal;
+          position: relative; z-index: 2;
+          transition: color 0.4s;
+        }
+        .va-hero-quote:hover p { color: rgba(40,30,20,0.85); }
+        .va-blob {
+          position: absolute; right: -24px; bottom: -24px;
+          width: 96px; height: 96px; border-radius: 50%;
+          background: rgba(40,30,20,0.04);
+          transition: transform 0.8s cubic-bezier(0.22,1,0.36,1);
+        }
+        .va-hero-quote:hover .va-blob { transform: scale(1.3); }
 
         /* ── SCROLL CUE ── */
-        .va-scroll-cue { margin-top: 80px; display: flex; flex-direction: column; align-items: center; gap: 14px; color: #9a9aa3; font-size: 9px; letter-spacing: 0.4em; font-weight: 800; text-transform: uppercase; }
-        .va-cue-bar { width: 1px; height: 60px; background: linear-gradient(#000, transparent); position: relative; overflow: hidden; }
-        .va-cue-bar::after { content: ""; position: absolute; left: 0; right: 0; top: -30px; height: 30px; background: #000; animation: va-cue 2.2s infinite; }
-        @keyframes va-cue { 0% { transform: translateY(0); } 100% { transform: translateY(120px); } }
+        .va-scroll-cue {
+          margin-top: 72px; display: flex; flex-direction: column; align-items: center; gap: 14px;
+          color: rgba(40,30,20,0.3); font-size: 10px; letter-spacing: 0.14em; font-weight: 400; text-transform: uppercase;
+        }
+        .va-cue-bar { width: 1px; height: 56px; background: linear-gradient(rgba(40,30,20,0.3), transparent); position: relative; overflow: hidden; }
+        .va-cue-bar::after { content: ""; position: absolute; left: 0; right: 0; top: -28px; height: 28px; background: rgba(40,30,20,0.4); animation: va-cue 2.2s infinite; }
+        @keyframes va-cue { 0% { transform: translateY(0); } 100% { transform: translateY(110px); } }
 
         /* ── MARQUEE ── */
-        .va-marquee { border-top: 1px solid #ececef; border-bottom: 1px solid #ececef; padding: 36px 0; overflow: hidden; background: #fafafe; }
-        .va-marquee-track { display: flex; gap: 64px; width: max-content; animation: va-scroll 50s linear infinite; align-items: center; }
+        .va-marquee {
+          border-top: 0.5px solid rgba(40,30,20,0.1);
+          border-bottom: 0.5px solid rgba(40,30,20,0.1);
+          padding: 32px 0; overflow: hidden; background: #e8e4dc;
+        }
+        .va-marquee-track { display: flex; gap: 64px; width: max-content; animation: va-scroll 55s linear infinite; align-items: center; }
         .va-marquee:hover .va-marquee-track { animation-play-state: paused; }
-        .va-marquee-item { display: flex; align-items: center; gap: 24px; font-style: italic; font-weight: 900; font-size: 64px; letter-spacing: -0.04em; text-transform: uppercase; white-space: nowrap; }
-        .va-star { font-size: 36px; font-style: normal; color: #000; display: inline-block; animation: va-spin 8s linear infinite; }
-        .va-ghost { -webkit-text-stroke: 1.5px #000; color: transparent; }
+        .va-marquee-item {
+          display: flex; align-items: center; gap: 24px;
+          font-weight: 400; font-style: normal;
+          font-size: 52px; letter-spacing: -0.02em;
+          white-space: nowrap; color: #1a1410;
+        }
+        .va-star { font-size: 28px; font-style: normal; color: rgba(40,30,20,0.4); display: inline-block; animation: va-spin 10s linear infinite; }
+        .va-ghost { -webkit-text-stroke: 1px rgba(40,30,20,0.25); color: transparent; }
         @keyframes va-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
         @keyframes va-spin { to { transform: rotate(360deg); } }
 
         /* ── MAP STORY ── */
         .va-map-story { position: relative; height: 100vh; }
-        .va-map-sticky { position: sticky; top: 64px; height: calc(100vh - 64px); display: flex; align-items: center; justify-content: center; background: #000; overflow: hidden; }
-        .va-map-sticky::before { content: ""; position: absolute; inset: 0; background: radial-gradient(1200px 600px at 30% 40%, rgba(255,255,255,.08), transparent 60%), radial-gradient(800px 500px at 75% 65%, rgba(255,255,255,.05), transparent 60%); pointer-events: none; z-index: 6; }
-        .va-map-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px); background-size: 60px 60px; transform: perspective(800px) rotateX(45deg) translateY(-10%) scale(1.6); transform-origin: center bottom; mask-image: radial-gradient(ellipse 60% 50% at center, black 30%, transparent 80%); -webkit-mask-image: radial-gradient(ellipse 60% 50% at center, black 30%, transparent 80%); animation: va-gridPulse 6s ease-in-out infinite; z-index: 1; }
-        @keyframes va-gridPulse { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
-        .va-map-actual { position: absolute; inset: 0; opacity: 0.2; z-index: 4; pointer-events: all; transition: opacity 1s; }
-        .va-map-actual:hover { opacity: 0.5; }
-        .va-map-content { position: absolute; z-index: 10; color: #fff; text-align: center; max-width: 900px; padding: 0 32px; pointer-events: none; }
-        .va-map-content .va-display { color: #fff; margin-bottom: 0; }
-        .va-map-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(0,0,0,.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,.1); padding: 10px 20px; border-radius: 999px; font-size: 10px; font-weight: 900; letter-spacing: 0.3em; text-transform: uppercase; color: #bdbdc4; margin-bottom: 32px; }
-        .va-map-content p { font-size: 16px; color: #9a9aa3; font-weight: 600; font-style: italic; max-width: 520px; margin: 20px auto 0; line-height: 1.6; }
-        .va-pin { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 0 rgba(255,255,255,.6); animation: va-ping 2.6s infinite; z-index: 8; pointer-events: none; }
-        .va-pin::after { content: ""; position: absolute; inset: -12px; border: 1px solid rgba(255,255,255,.3); border-radius: 50%; }
+        .va-map-sticky { position: sticky; top: 64px; height: calc(100vh - 64px); display: flex; align-items: center; justify-content: center; background: #1a1410; overflow: hidden; }
+        .va-map-sticky::before { content: ""; position: absolute; inset: 0; background: radial-gradient(1200px 600px at 30% 40%, rgba(255,253,250,0.06), transparent 60%), radial-gradient(800px 500px at 75% 65%, rgba(255,253,250,0.04), transparent 60%); pointer-events: none; z-index: 6; }
+        .va-map-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,253,250,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,253,250,0.05) 1px, transparent 1px); background-size: 60px 60px; transform: perspective(800px) rotateX(45deg) translateY(-10%) scale(1.6); transform-origin: center bottom; mask-image: radial-gradient(ellipse 60% 50% at center, black 30%, transparent 80%); -webkit-mask-image: radial-gradient(ellipse 60% 50% at center, black 30%, transparent 80%); animation: va-gridPulse 6s ease-in-out infinite; z-index: 1; }
+        @keyframes va-gridPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.9; } }
+        .va-map-actual { position: absolute; inset: 0; opacity: 0.18; z-index: 4; pointer-events: all; transition: opacity 0.8s; }
+        .va-map-actual:hover { opacity: 0.45; }
+        .va-map-content { position: absolute; z-index: 10; color: rgba(255,253,250,0.92); text-align: center; max-width: 900px; padding: 0 32px; pointer-events: none; }
+        .va-map-content .va-display { color: rgba(255,253,250,0.92); margin-bottom: 0; }
+        .va-map-content .va-row-muted .va-word { color: rgba(255,253,250,0.3); }
+        .va-map-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,253,250,0.06); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 0.5px solid rgba(255,253,250,0.1); padding: 9px 18px; border-radius: 999px; font-size: 10px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,253,250,0.45); margin-bottom: 32px; }
+        .va-map-tag .va-dot { background: rgba(255,253,250,0.5); }
+        .va-map-content p { font-size: 14px; color: rgba(255,253,250,0.4); font-weight: 400; max-width: 480px; margin: 20px auto 0; line-height: 1.75; }
+        .va-pin { position: absolute; width: 10px; height: 10px; border-radius: 50%; background: rgba(255,253,250,0.7); box-shadow: 0 0 0 0 rgba(255,253,250,0.4); animation: va-ping 2.8s infinite; z-index: 8; pointer-events: none; }
+        .va-pin::after { content: ""; position: absolute; inset: -10px; border: 0.5px solid rgba(255,253,250,0.2); border-radius: 50%; }
         .va-pin-1 { top: 32%; left: 20%; animation-delay: 0s; }
         .va-pin-2 { top: 48%; left: 72%; animation-delay: 0.6s; }
         .va-pin-3 { top: 62%; left: 35%; animation-delay: 1.1s; }
         .va-pin-4 { top: 38%; left: 55%; animation-delay: 1.6s; }
-        @keyframes va-ping { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,.6); } 80%, 100% { box-shadow: 0 0 0 28px rgba(255,255,255,0); } }
+        @keyframes va-ping { 0% { box-shadow: 0 0 0 0 rgba(255,253,250,0.4); } 80%, 100% { box-shadow: 0 0 0 24px rgba(255,253,250,0); } }
 
         /* ── GALLERY ── */
         .va-gallery { max-width: 1400px; margin: 0 auto; padding: 120px 32px 160px; }
-        .va-gallery-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 80px; padding: 0 16px; }
-        .va-gallery-title { font-size: clamp(40px, 5vw, 72px); font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.06em; line-height: 0.9; margin: 0; }
-        .va-gallery-sub { font-size: 11px; letter-spacing: 0.3em; font-weight: 800; color: #bdbdc4; text-transform: uppercase; margin-top: 8px; }
-        .va-gallery-line { flex: 1; height: 1px; background: #ececef; margin: 0 48px 8px; }
-        .va-gallery-count { font-size: 48px; font-weight: 900; font-style: italic; color: #e8e8ec; line-height: 1; text-align: right; }
-        .va-gallery-count-sub { font-size: 9px; letter-spacing: 0.25em; font-weight: 900; color: #d0d0d6; text-transform: uppercase; text-align: right; margin-top: 4px; }
-        .va-grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 32px; }
+        .va-gallery-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 72px; padding: 0 16px; }
+        .va-gallery-title { font-size: clamp(32px, 4vw, 56px); font-weight: 500; font-style: normal; letter-spacing: -0.02em; line-height: 1.0; margin: 0; color: #1a1410; }
+        .va-gallery-sub { font-size: 10px; letter-spacing: 0.12em; font-weight: 400; color: rgba(40,30,20,0.35); text-transform: uppercase; margin-top: 8px; }
+        .va-gallery-line { flex: 1; height: 0.5px; background: rgba(40,30,20,0.1); margin: 0 48px 8px; }
+        .va-gallery-count { font-size: 40px; font-weight: 500; font-style: normal; color: rgba(40,30,20,0.15); line-height: 1; text-align: right; letter-spacing: -0.02em; }
+        .va-gallery-count-sub { font-size: 10px; letter-spacing: 0.1em; font-weight: 400; color: rgba(40,30,20,0.25); text-transform: uppercase; text-align: right; margin-top: 4px; }
+        .va-grid-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
 
         /* ── CARDS ── */
-        .va-card { background: #fff; border: 1px solid #f0f0f3; border-radius: 40px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,.02); transition: box-shadow 0.8s, transform 0.8s cubic-bezier(.2,.8,.2,1), border-color 0.8s, opacity 0.8s; cursor: pointer; display: flex; flex-direction: column; gap: 24px; transform: translateY(60px) scale(0.96); opacity: 0; outline: none; }
-        .va-card.va-in { transform: translateY(0) scale(1); opacity: 1; }
-        .va-card:hover { box-shadow: 0 60px 100px -40px rgba(0,0,0,.12); transform: translateY(-6px) scale(1) !important; }
-        .va-card:focus-visible { border-color: #000; box-shadow: 0 0 0 3px rgba(0,0,0,.15); }
-        .va-card-thumb { height: 280px; background: #fafafa; border-radius: 28px; overflow: hidden; position: relative; }
-        .va-card-index { position: absolute; top: 16px; left: 16px; background: #fff; color: #000; border: 1px solid #f0f0f3; padding: 6px 10px; border-radius: 8px; font-size: 9px; font-weight: 900; letter-spacing: 0.2em; text-transform: uppercase; z-index: 3; transition: background 0.5s, color 0.5s; }
-        .va-card:hover .va-card-index { background: #000; color: #fff; }
+        .va-card {
+          background: rgba(255,253,250,0.7);
+          border: 0.5px solid rgba(40,30,20,0.08);
+          border-radius: 16px; padding: 20px;
+          box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+          transition: box-shadow 0.4s cubic-bezier(0.22,1,0.36,1), transform 0.4s cubic-bezier(0.22,1,0.36,1), border-color 0.4s, opacity 0.6s;
+          cursor: pointer; display: flex; flex-direction: column; gap: 20px;
+          transform: translateY(20px); opacity: 0; outline: none;
+          backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        }
+        .va-card.va-in { transform: translateY(0); opacity: 1; }
+        .va-card:hover { box-shadow: 0 8px 40px rgba(0,0,0,0.08); transform: translateY(-4px) !important; border-color: rgba(40,30,20,0.14); }
+        .va-card:focus-visible { border-color: rgba(40,30,20,0.3); box-shadow: 0 0 0 2px rgba(40,30,20,0.15); }
+        .va-card-thumb { height: 260px; background: rgba(40,30,20,0.04); border-radius: 10px; overflow: hidden; position: relative; }
+        .va-card-index {
+          position: absolute; top: 14px; left: 14px;
+          background: rgba(255,253,250,0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+          color: rgba(40,30,20,0.45);
+          border: 0.5px solid rgba(40,30,20,0.1);
+          padding: 5px 10px; border-radius: 6px;
+          font-size: 10px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase;
+          z-index: 3; transition: background 0.2s, color 0.2s;
+        }
+        .va-card:hover .va-card-index { background: rgba(40,30,20,0.85); color: rgba(255,253,250,0.9); }
         .va-card-canvas { width: 100%; height: 100%; }
-        .va-card-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; background: repeating-linear-gradient(45deg, #f5f5f8 0 12px, #fafafe 12px 24px); }
-        .va-card-glyph { width: 60px; height: 60px; border: 2px solid #000; transition: transform 1.2s cubic-bezier(.2,.8,.2,1); }
-        .va-card:hover .va-card-glyph { transform: rotate(45deg) scale(1.15); }
-        .va-card-glyph-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #a0a0a8; letter-spacing: 0.2em; text-transform: uppercase; }
-        .va-reveal-cta { position: absolute; left: 16px; right: 16px; bottom: 16px; background: #000; color: #fff; padding: 14px; border-radius: 14px; font-size: 9px; font-weight: 900; letter-spacing: 0.2em; text-transform: uppercase; display: flex; align-items: center; justify-content: center; z-index: 3; transform: translateY(20px); opacity: 0; transition: transform 0.7s cubic-bezier(.2,.8,.2,1), opacity 0.7s; }
+        .va-card-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px; background: rgba(40,30,20,0.03); }
+        .va-card-glyph { width: 48px; height: 48px; border: 0.5px solid rgba(40,30,20,0.25); transition: transform 0.8s cubic-bezier(0.22,1,0.36,1); }
+        .va-card:hover .va-card-glyph { transform: rotate(45deg); }
+        .va-card-glyph-label { font-size: 9px; color: rgba(40,30,20,0.3); letter-spacing: 0.12em; text-transform: uppercase; font-weight: 400; }
+        .va-reveal-cta {
+          position: absolute; left: 14px; right: 14px; bottom: 14px;
+          background: rgba(255,253,250,0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+          color: rgba(40,30,20,0.6);
+          border: 0.5px solid rgba(40,30,20,0.1);
+          padding: 12px; border-radius: 8px;
+          font-size: 10px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase;
+          display: flex; align-items: center; justify-content: center;
+          z-index: 3; transform: translateY(16px); opacity: 0;
+          transition: transform 0.4s cubic-bezier(0.22,1,0.36,1), opacity 0.4s;
+        }
         .va-card:hover .va-reveal-cta { transform: translateY(0); opacity: 1; }
-        .va-card-meta { padding: 0 8px; display: flex; flex-direction: column; gap: 16px; }
-        .va-card-meta h4 { font-size: 24px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.04em; line-height: 1.1; margin: 0; min-height: 60px; display: flex; align-items: flex-end; transition: color 0.5s; }
-        .va-card:hover .va-card-meta h4 { color: #5b5b66; }
-        .va-card-tags { display: flex; align-items: center; gap: 8px; border-top: 1px solid #f5f5f8; padding-top: 12px; flex-wrap: wrap; }
-        .va-tag-loc { background: #000; color: #fff; padding: 5px 8px; border-radius: 6px; font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase; line-height: 1; }
-        .va-tag-date { font-size: 9px; font-weight: 900; color: #c0c0c8; letter-spacing: 0.18em; text-transform: uppercase; line-height: 1; padding-left: 8px; border-left: 1px solid #ececef; }
+        .va-card-meta { padding: 0 4px; display: flex; flex-direction: column; gap: 14px; }
+        .va-card-meta h4 { font-size: 18px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; margin: 0; color: #1a1410; transition: color 0.2s; }
+        .va-card:hover .va-card-meta h4 { color: rgba(40,30,20,0.6); }
+        .va-card-tags { display: flex; align-items: center; gap: 8px; border-top: 0.5px solid rgba(40,30,20,0.08); padding-top: 12px; flex-wrap: wrap; }
+        .va-tag-loc { background: rgba(40,30,20,0.07); color: rgba(40,30,20,0.5); padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; line-height: 1; }
+        .va-tag-date { font-size: 10px; font-weight: 400; color: rgba(40,30,20,0.3); letter-spacing: 0.1em; text-transform: uppercase; line-height: 1; padding-left: 8px; border-left: 0.5px solid rgba(40,30,20,0.1); }
 
         /* ── HORIZONTAL SCROLL PROCESS ── */
         .va-feature { position: relative; height: 300vh; }
-        .va-feature-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; align-items: center; background: #0b0b0d; color: #fff; }
-        .va-feature-track { display: flex; gap: 48px; padding: 0 64px; will-change: transform; }
-        .va-feature-card { flex: 0 0 auto; width: 520px; height: 64vh; border-radius: 32px; overflow: hidden; position: relative; background: #161618; border: 1px solid rgba(255,255,255,.06); display: flex; flex-direction: column; justify-content: flex-end; padding: 36px; }
-        .va-feature-ph { position: absolute; inset: 0; background: repeating-linear-gradient(45deg, rgba(255,255,255,.03) 0 18px, rgba(255,255,255,.06) 18px 36px); }
-        .va-feature-ph::after { content: ""; position: absolute; inset: 30%; border: 2px solid rgba(255,255,255,.18); border-radius: 8px; }
-        .va-feature-accent { background: #fff; color: #000; }
-        .va-feature-accent .va-feature-ph { background: repeating-linear-gradient(45deg, #f5f5f8 0 18px, #fafafe 18px 36px); }
-        .va-feature-accent .va-feature-ph::after { border-color: #000; }
-        .va-feature-num { position: absolute; top: 24px; right: 24px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.3em; color: #666; text-transform: uppercase; }
-        .va-feature-accent .va-feature-num { color: #bdbdc4; }
+        .va-feature-pin { position: sticky; top: 0; height: 100vh; overflow: hidden; display: flex; align-items: center; background: #1a1410; color: rgba(255,253,250,0.9); }
+        .va-feature-track { display: flex; gap: 40px; padding: 0 64px; will-change: transform; }
+        .va-feature-card {
+          flex: 0 0 auto; width: 500px; height: 62vh;
+          border-radius: 16px; overflow: hidden; position: relative;
+          background: #221e18;
+          border: 0.5px solid rgba(255,253,250,0.07);
+          display: flex; flex-direction: column; justify-content: flex-end; padding: 32px;
+        }
+        .va-feature-ph { position: absolute; inset: 0; background: repeating-linear-gradient(45deg, rgba(255,253,250,0.02) 0 18px, rgba(255,253,250,0.04) 18px 36px); }
+        .va-feature-ph::after { content: ""; position: absolute; inset: 30%; border: 0.5px solid rgba(255,253,250,0.12); border-radius: 8px; }
+        .va-feature-accent { background: rgba(255,253,250,0.95); color: #1a1410; }
+        .va-feature-accent .va-feature-ph { background: repeating-linear-gradient(45deg, rgba(40,30,20,0.03) 0 18px, rgba(40,30,20,0.01) 18px 36px); }
+        .va-feature-accent .va-feature-ph::after { border-color: rgba(40,30,20,0.12); }
+        .va-feature-num { position: absolute; top: 24px; right: 24px; font-size: 10px; letter-spacing: 0.14em; color: rgba(255,253,250,0.25); text-transform: uppercase; }
+        .va-feature-accent .va-feature-num { color: rgba(40,30,20,0.25); }
         .va-feature-body { position: relative; z-index: 2; }
-        .va-feature-eyebrow { font-size: 10px; letter-spacing: 0.3em; color: #a0a0a8; font-weight: 900; text-transform: uppercase; margin-bottom: 14px; }
-        .va-feature-accent .va-feature-eyebrow { color: #9a9aa3; }
-        .va-feature-body h5 { font-size: 42px; font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.04em; line-height: 0.95; margin: 0 0 16px; }
-        .va-feature-body p { font-size: 14px; color: #9a9aa3; line-height: 1.55; font-style: italic; margin: 0; max-width: 380px; }
-        .va-feature-accent .va-feature-body p { color: #5b5b66; }
-        .va-feature-header { position: absolute; top: 0; left: 0; right: 0; padding: 96px 64px 0; display: flex; justify-content: space-between; align-items: flex-start; z-index: 3; pointer-events: none; }
-        .va-feature-header h3 { font-size: clamp(36px, 5vw, 80px); font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.06em; line-height: 0.9; margin: 0; max-width: 560px; color: #fff; }
-        .va-feature-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.3em; color: #555; text-transform: uppercase; text-align: right; padding-top: 8px; }
-        .va-feature-progress { position: absolute; bottom: 48px; left: 64px; right: 64px; height: 1px; background: rgba(255,255,255,.1); z-index: 3; }
-        .va-feature-fill { height: 100%; background: #fff; width: 0%; }
+        .va-feature-eyebrow { font-size: 10px; letter-spacing: 0.12em; color: rgba(255,253,250,0.35); font-weight: 400; text-transform: uppercase; margin-bottom: 12px; }
+        .va-feature-accent .va-feature-eyebrow { color: rgba(40,30,20,0.35); }
+        .va-feature-body h5 { font-size: 32px; font-weight: 500; font-style: normal; letter-spacing: -0.02em; line-height: 1.1; margin: 0 0 14px; }
+        .va-feature-body p { font-size: 14px; color: rgba(255,253,250,0.4); line-height: 1.75; margin: 0; max-width: 360px; }
+        .va-feature-accent .va-feature-body p { color: rgba(40,30,20,0.55); }
+        .va-feature-header { position: absolute; top: 0; left: 0; right: 0; padding: 80px 64px 0; display: flex; justify-content: space-between; align-items: flex-start; z-index: 3; pointer-events: none; }
+        .va-feature-header h3 { font-size: clamp(28px, 4vw, 64px); font-weight: 500; font-style: normal; letter-spacing: -0.02em; line-height: 1.0; margin: 0; max-width: 500px; color: rgba(255,253,250,0.88); }
+        .va-feature-meta { font-size: 10px; letter-spacing: 0.12em; color: rgba(255,253,250,0.25); text-transform: uppercase; text-align: right; padding-top: 8px; font-weight: 400; }
+        .va-feature-progress { position: absolute; bottom: 40px; left: 64px; right: 64px; height: 0.5px; background: rgba(255,253,250,0.1); z-index: 3; }
+        .va-feature-fill { height: 100%; background: rgba(255,253,250,0.5); width: 0%; }
 
         /* ── CTA STRIP ── */
-        .va-cta-strip { background: #000; color: #fff; padding: 160px 32px; text-align: center; position: relative; overflow: hidden; border-radius: 48px 48px 0 0; }
-        .va-cta-display { color: #fff; }
-        .va-stroke { -webkit-text-stroke: 2px #fff; color: transparent; }
-        .va-magnet-wrap { margin-top: 60px; display: flex; justify-content: center; }
-        .va-magnet { background: #fff; color: #000; padding: 24px 48px; border-radius: 999px; font-size: 12px; font-weight: 900; letter-spacing: 0.25em; text-transform: uppercase; cursor: pointer; border: none; font-family: 'Inter', Helvetica, Arial, sans-serif; transition: box-shadow 0.3s; }
-        .va-magnet:hover { box-shadow: 0 20px 60px rgba(255,255,255,.2); }
+        .va-cta-strip { background: #1a1410; color: rgba(255,253,250,0.92); padding: 140px 32px; text-align: center; position: relative; overflow: hidden; border-radius: 24px 24px 0 0; }
+        .va-cta-display { color: rgba(255,253,250,0.92); }
+        .va-cta-display .va-row-muted .va-word { color: rgba(255,253,250,0.3); }
+        .va-stroke { -webkit-text-stroke: 1.5px rgba(255,253,250,0.7); color: transparent; }
+        .va-magnet-wrap { margin-top: 56px; display: flex; justify-content: center; }
+        .va-magnet {
+          background: rgba(255,253,250,0.9);
+          color: #1a1410;
+          padding: 20px 48px; border-radius: 999px;
+          font-size: 13px; font-weight: 400; letter-spacing: -0.01em;
+          cursor: pointer; border: 0.5px solid rgba(255,253,250,0.2);
+          font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+          transition: box-shadow 0.4s cubic-bezier(0.22,1,0.36,1), background 0.2s;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        }
+        .va-magnet:hover { box-shadow: 0 8px 40px rgba(0,0,0,0.2); background: rgba(255,253,250,1); }
+        .va-magnet:active { transform: scale(0.97); transition: transform 0.1s; }
 
         /* ── FOOTER ── */
-        .va-footer { background: #000; color: #fff; padding: 64px 32px 40px; }
+        .va-footer { background: #1a1410; color: rgba(255,253,250,0.9); padding: 64px 32px 40px; }
         .va-foot-inner { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; }
-        .va-foot-inner > div > h2 { font-size: clamp(32px, 4vw, 56px); font-weight: 900; font-style: italic; text-transform: uppercase; letter-spacing: -0.06em; line-height: 0.9; margin: 0; }
-        .va-foot-ghost { color: #333; }
-        .va-foot-inner > div > p { color: #666; font-size: 14px; font-weight: 600; font-style: italic; line-height: 1.5; max-width: 380px; margin: 24px 0 0; }
-        .va-foot-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: 32px; }
-        .va-foot-label { font-size: 9px; letter-spacing: 0.5em; font-weight: 900; color: #444; text-transform: uppercase; text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 2px; }
-        .va-ig { width: 56px; height: 56px; border-radius: 18px; background: #111; border: 1px solid #1f1f24; display: flex; align-items: center; justify-content: center; color: #fff; transition: background 0.6s, color 0.6s, transform 0.6s; }
-        .va-ig:hover { background: #fff; color: #000; transform: scale(1.08) rotate(-6deg); }
-        .va-v-badge { font-size: 9px; letter-spacing: 0.3em; font-weight: 900; color: #666; text-transform: uppercase; border: 1px solid #1f1f24; background: rgba(20,20,24,.5); padding: 10px 20px; border-radius: 999px; }
-        .va-foot-bottom { max-width: 1400px; margin: 32px auto 0; border-top: 1px solid #1f1f24; padding-top: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 9px; font-weight: 800; color: #444; letter-spacing: 0.3em; text-transform: uppercase; }
-        .va-foot-links { display: flex; gap: 32px; color: #333; }
+        .va-foot-inner > div > h2 { font-size: clamp(28px, 3.5vw, 48px); font-weight: 500; font-style: normal; letter-spacing: -0.02em; line-height: 1.0; margin: 0; color: rgba(255,253,250,0.88); }
+        .va-foot-ghost { color: rgba(255,253,250,0.18); }
+        .va-foot-inner > div > p { color: rgba(255,253,250,0.35); font-size: 13px; font-weight: 400; line-height: 1.75; max-width: 360px; margin: 20px 0 0; }
+        .va-foot-right { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: 28px; }
+        .va-foot-label { font-size: 10px; letter-spacing: 0.12em; font-weight: 400; color: rgba(255,253,250,0.25); text-transform: uppercase; }
+        .va-ig { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,253,250,0.06); border: 0.5px solid rgba(255,253,250,0.1); display: flex; align-items: center; justify-content: center; color: rgba(255,253,250,0.6); transition: background 0.2s, color 0.2s; }
+        .va-ig:hover { background: rgba(255,253,250,0.12); color: rgba(255,253,250,0.9); }
+        .va-v-badge { font-size: 10px; letter-spacing: 0.1em; font-weight: 400; color: rgba(255,253,250,0.25); text-transform: uppercase; border: 0.5px solid rgba(255,253,250,0.1); padding: 8px 16px; border-radius: 999px; }
+        .va-foot-bottom { max-width: 1400px; margin: 28px auto 0; border-top: 0.5px solid rgba(255,253,250,0.08); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 10px; font-weight: 400; color: rgba(255,253,250,0.25); letter-spacing: 0.1em; text-transform: uppercase; }
+        .va-foot-links { display: flex; gap: 28px; }
 
         /* ── GENERIC REVEAL ── */
-        .va-reveal { opacity: 0; transform: translateY(40px); transition: opacity 1s cubic-bezier(.2,.8,.2,1), transform 1s cubic-bezier(.2,.8,.2,1); }
+        .va-reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1); }
         .va-reveal.va-in { opacity: 1; transform: translateY(0); }
 
         /* ── MOBILE ── */
         @media (max-width: 768px) {
           .va-nav { padding: 0 20px; }
           .va-hero-section { padding: 96px 20px 80px; }
-          .va-display { font-size: clamp(44px, 12vw, 72px); line-height: 0.92; }
-          .va-hero-quote { padding: 28px; border-radius: 28px; }
-          .va-hero-quote p { font-size: 15px; }
-          .va-marquee-item { font-size: 40px; }
+          .va-display { font-size: clamp(36px, 10vw, 64px); line-height: 1.05; }
+          .va-hero-quote { padding: 28px; border-radius: 14px; }
+          .va-hero-quote p { font-size: 14px; }
+          .va-marquee-item { font-size: 36px; }
           .va-gallery { padding: 60px 16px 80px; }
           .va-gallery-head { flex-direction: column; align-items: flex-start; gap: 12px; padding: 0; }
           .va-gallery-line { display: none; }
           .va-gallery-count { text-align: left; }
           .va-grid-cards { grid-template-columns: 1fr 1fr; gap: 12px; }
-          .va-card { border-radius: 24px; padding: 14px; gap: 14px; }
-          .va-card-thumb { height: 180px; border-radius: 16px; }
-          .va-card-meta h4 { font-size: 16px; min-height: 40px; }
-          .va-feature-card { width: 82vw; height: 60vh; }
-          .va-feature-header { padding: 64px 24px 0; }
-          .va-feature-track { padding: 0 24px; gap: 24px; }
-          .va-cta-strip { padding: 80px 20px; border-radius: 28px 28px 0 0; }
-          .va-magnet { padding: 18px 32px; font-size: 10px; }
-          .va-foot-inner { grid-template-columns: 1fr; gap: 32px; }
+          .va-card { border-radius: 12px; padding: 14px; gap: 14px; }
+          .va-card-thumb { height: 180px; border-radius: 8px; }
+          .va-card-meta h4 { font-size: 15px; }
+          .va-feature-card { width: 82vw; height: 58vh; }
+          .va-feature-header { padding: 56px 24px 0; }
+          .va-feature-track { padding: 0 24px; gap: 20px; }
+          .va-cta-strip { padding: 80px 20px; border-radius: 20px 20px 0 0; }
+          .va-magnet { padding: 16px 32px; font-size: 12px; }
+          .va-foot-inner { grid-template-columns: 1fr; gap: 28px; }
           .va-foot-right { align-items: flex-start; }
           .va-map-content p { display: none; }
         }
